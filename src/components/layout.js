@@ -1,51 +1,59 @@
-/**
- * Layout component that queries for data
- * with Gatsby's useStaticQuery component
- *
- * See: https://www.gatsbyjs.org/docs/use-static-query/
- */
+import React, { Fragment, useEffect } from 'react';
+import { createGlobalStyle, ThemeProvider } from 'styled-components';
+import PropTypes from 'prop-types';
+import { ScrollingProvider } from 'react-scroll-section';
+import 'react-tippy/dist/tippy.css';
+// import config from 'react-reveal/globals';
+import colors from './colors';
+// import Helmet from './Helmet';
 
-import React from "react"
-import PropTypes from "prop-types"
-import { useStaticQuery, graphql } from "gatsby"
+const GlobalStyle = createGlobalStyle`
+  *,
+  *::after,
+  *::before { 
+    box-sizing: inherit;
+    }
 
-import Header from "./header"
-import "./layout.css"
+  body {
+    box-sizing: border-box; 
+    margin: 0;
+    font-family: Cabin, 'Open Sans', sans-serif;
+    font-display: swap;
+    font-display: fallback;
+    overflow-x: hidden;
+  }
+`;
+
+// config({ ssrFadeout: true });
+
+const loadScript = src => {
+  const tag = document.createElement('script');
+  tag.src = src;
+  tag.defer = true;
+
+  document.getElementsByTagName('body')[0].appendChild(tag);
+};
 
 const Layout = ({ children }) => {
-  const data = useStaticQuery(graphql`
-    query SiteTitleQuery {
-      site {
-        siteMetadata {
-          title
-        }
-      }
-    }
-  `)
+  useEffect(() => {
+    loadScript('https://use.fontawesome.com/fd58d214b9.js');
+  }, []);
 
   return (
-    <>
-      <Header siteTitle={data.site.siteMetadata.title} />
-      <div
-        style={{
-          margin: `0 auto`,
-          maxWidth: 960,
-          padding: `0 1.0875rem 1.45rem`,
-        }}
-      >
-        <main>{children}</main>
-        <footer>
-          © {new Date().getFullYear()}, Built with
-          {` `}
-          <a href="https://www.gatsbyjs.org">Gatsby</a>
-        </footer>
-      </div>
-    </>
-  )
-}
+    <Fragment>
+      <GlobalStyle />
+      <ThemeProvider theme={{ colors }}>
+        <ScrollingProvider>
+          {/* <Helmet /> */}
+          {children}
+        </ScrollingProvider>
+      </ThemeProvider>
+    </Fragment>
+  );
+};
 
 Layout.propTypes = {
   children: PropTypes.node.isRequired,
-}
+};
 
-export default Layout
+export default Layout;
